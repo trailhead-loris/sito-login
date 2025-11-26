@@ -9,7 +9,7 @@
     .box { background: #fff; padding: 24px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
     h1 { margin: 0 0 10px; }
     .email { color: #444; margin-bottom: 16px; }
-    a.button { display: inline-block; padding: 10px 14px; background: #0969da; color: #fff; border-radius: 6px; text-decoration: none; }
+    a.button { display: inline-block; padding: 10px 14px; background: #0969da; color: #fff; border-radius: 6px; text-decoration: none; cursor: pointer; }
     a.button:hover { background: #0758b7; }
   </style>
 </head>
@@ -18,54 +18,69 @@
     <h1 id="welcome-message">Benvenuto!</h1>
     <p class="email" id="email-line"></p>
 
-    <a id="chat-link" class="button" href="#">Caricamento...</a>
+    <a id="btn-open-chat" class="button">Apri Chat Supporto</a>
   </div>
 
   <script>
-    // Recupera i dati salvati
+    // --- PARTE 1: GESTIONE GRAFICA BENVENUTO ---
     const name = localStorage.getItem('name');
     const email = localStorage.getItem('email');
 
-    // 1. Gestione del Nome
-    // Se 'name' esiste usa quello, altrimenti usa 'Utente'
+    // Mostra il nome
     const displayName = name || 'Utente';
     document.getElementById('welcome-message').innerText = `Benvenuto, ${displayName}!`;
 
-    // 2. Gestione della Email
+    // Mostra la mail
     if (email) {
       document.getElementById('email-line').innerText = `Email: ${email}`;
     } else {
       document.getElementById('email-line').innerText = `Email non disponibile`;
     }
 
-    // 3. Gestione del Link Chat
-    // Creiamo l'URL dinamico
-    const chatUrl = `chat.html?email=${encodeURIComponent(email || '')}`;
-    
-    // Aggiorniamo il bottone nell'HTML
-    const chatLink = document.getElementById('chat-link');
-    chatLink.href = chatUrl;
-    chatLink.innerText = 'Vai alla chat';
+    // Gestione click sul bottone "Apri Chat"
+    document.getElementById('btn-open-chat').onclick = function() {
+        console.log("Tentativo di apertura chat...");
+        if (window.embeddedservice_bootstrap && window.embeddedservice_bootstrap.utilAPI) {
+            window.embeddedservice_bootstrap.utilAPI.launchChat()
+                .then(() => console.log("Chat aperta con successo"))
+                .catch(() => alert("Impossibile aprire la chat al momento."));
+        } else {
+            alert("Il servizio di chat si sta ancora caricando, riprova tra un secondo.");
+        }
+    };
   </script>
-  <script type='text/javascript'>
-	function initEmbeddedMessaging() {
-		try {
-			embeddedservice_bootstrap.settings.language = 'it'; // For example, enter 'en' or 'en-US'
 
-			embeddedservice_bootstrap.init(
-				'00DfZ000000Aod3',
-				'Case_Support_Agent_Test',
-				'https://chogangroup--devai1.sandbox.my.site.com/ESWCaseSupportAgentTes1764164304917',
-				{
-					scrt2URL: 'https://chogangroup--devai1.sandbox.my.salesforce-scrt.com'
-				}
-			);
-		} catch (err) {
-			console.error('Error loading Embedded Messaging: ', err);
-		}
-	};
-</script>
-<script type='text/javascript' src='https://chogangroup--devai1.sandbox.my.site.com/ESWCaseSupportAgentTes1764164304917/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+  <script type='text/javascript'>
+    function initEmbeddedMessaging() {
+        try {
+            // Recupera email
+            const userEmail = localStorage.getItem('email') || '';
+            
+            embeddedservice_bootstrap.settings.language = 'it'; 
+
+            embeddedservice_bootstrap.init(
+                '00DfZ000000Aod3',
+                'Case_Support_Agent_Test',
+                'https://chogangroup--devai1.sandbox.my.site.com/ESWCaseSupportAgentTes1764164304917',
+                {
+                    scrt2URL: 'https://chogangroup--devai1.sandbox.my.salesforce-scrt.com'
+                }
+            ).then(() => {
+                // APPENA IL WIDGET È PRONTO:
+                // 1. Passiamo l'email nascosta
+                embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
+                    "Login_Email_Consulente": userEmail
+                });
+                console.log("Salesforce pronto. Email passata:", userEmail);
+            });
+
+        } catch (err) {
+            console.error('Error loading Embedded Messaging: ', err);
+        }
+    };
+  </script>
+  
+  <script type='text/javascript' src='https://chogangroup--devai1.sandbox.my.site.com/ESWCaseSupportAgentTes1764164304917/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
 </body>
 </html>
