@@ -86,7 +86,7 @@
 
                 // Abilitiamo il bottone
                 const btn = document.getElementById('btn-open-chat');
-                btn.innerText = "Parla con l'Agente";
+                btn.innerText = "Premi per parlare con l'Agente";
                 btn.classList.remove('disabled');
                 window.isSalesforceReady = true;
 
@@ -96,7 +96,7 @@
             });
 
         } catch (err) {
-            console.error('Eccezione nello script di init: ', err);
+            console.error('Eccezione nello script init: ', err);
         }
     };
   </script>
