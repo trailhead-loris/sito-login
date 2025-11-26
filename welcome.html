@@ -11,6 +11,7 @@
     .email { color: #444; margin-bottom: 16px; }
     a.button { display: inline-block; padding: 10px 14px; background: #0969da; color: #fff; border-radius: 6px; text-decoration: none; cursor: pointer; }
     a.button:hover { background: #0758b7; }
+    a.button.disabled { background: #ccc; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -18,49 +19,54 @@
     <h1 id="welcome-message">Benvenuto!</h1>
     <p class="email" id="email-line"></p>
 
-    <a id="btn-open-chat" class="button">Apri Chat Supporto</a>
+    <a id="btn-open-chat" class="button disabled">Caricamento Chat...</a>
   </div>
 
   <script>
-    // --- PARTE 1: GESTIONE GRAFICA BENVENUTO ---
     const name = localStorage.getItem('name');
     const email = localStorage.getItem('email');
 
-    // Mostra il nome
+    // UI: Nome
     const displayName = name || 'Utente';
     document.getElementById('welcome-message').innerText = `Benvenuto, ${displayName}!`;
 
-    // Mostra la mail
+    // UI: Email
     if (email) {
       document.getElementById('email-line').innerText = `Email: ${email}`;
     } else {
       document.getElementById('email-line').innerText = `Email non disponibile`;
     }
 
-    // Gestione click sul bottone "Apri Chat"
-    document.getElementById('btn-open-chat').onclick = function() {
-        console.log("Tentativo di apertura chat...");
-        if (window.embeddedservice_bootstrap && window.embeddedservice_bootstrap.utilAPI) {
-            window.embeddedservice_bootstrap.utilAPI.launchChat()
-                .then(() => console.log("Chat aperta con successo"))
-                .catch(() => alert("Impossibile aprire la chat al momento."));
-        } else {
-            alert("Il servizio di chat si sta ancora caricando, riprova tra un secondo.");
+    // UI: Gestione Click Bottone
+    const btnChat = document.getElementById('btn-open-chat');
+    
+    btnChat.onclick = function() {
+        if (btnChat.classList.contains('disabled')) {
+            console.warn("Chat non ancora pronta.");
+            return;
         }
+
+        console.log("Tentativo di apertura chat...");
+        // Avvia la chat
+        embeddedservice_bootstrap.utilAPI.launchChat()
+            .then(() => console.log("Chat aperta."))
+            .catch((e) => console.error("Errore apertura chat:", e));
     };
   </script>
 
-<script type='text/javascript'>
+  <script type='text/javascript'>
+    // Variabile globale per capire quando è pronto
+    window.isSalesforceReady = false;
+
     function initEmbeddedMessaging() {
+        console.log("--> INIZIO INIT SALESFORCE <--");
         try {
-            // Recupera email
             const userEmail = localStorage.getItem('email') || '';
-            
-            // LOG DI CONTROLLO 1
-            console.log("1. Email trovata nel localStorage:", userEmail);
+            console.log("1. Email recuperata:", userEmail);
 
             embeddedservice_bootstrap.settings.language = 'it'; 
 
+            // Configurazione (con il nome corretto che mi hai dato prima)
             embeddedservice_bootstrap.init(
                 '00DfZ000000Aod3',
                 'Case_Support_Agent_With_variable', 
@@ -69,30 +75,33 @@
                     scrt2URL: 'https://chogangroup--devai1.sandbox.my.salesforce-scrt.com'
                 }
             ).then(() => {
-                // LOG DI CONTROLLO 2
-                console.log("2. Init completata. Tento di inviare i campi nascosti...");
-                
-                // Preparo l'oggetto
-                const hiddenFields = {
-                    "Login_Email_Consulente": userEmail
-                };
+                // SUCCESSO!
+                console.log("2. Init completata con successo.");
 
-                // Invio
-                embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields(hiddenFields);
-                
-                // LOG DI CONTROLLO 3
-                console.log("3. EMAIL INVIATA A SALESFORCE:", hiddenFields);
-                console.log("Se non la vedi nel Flow, controlla che la variabile Flow sia 'Available for Input'.");
+                // Passaggio parametri nascosti
+                embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
+                    "Login_Email_Consulente": userEmail
+                });
+                console.log("3. Parametri nascosti impostati.");
+
+                // Abilitiamo il bottone
+                const btn = document.getElementById('btn-open-chat');
+                btn.innerText = "Parla con l'Agente";
+                btn.classList.remove('disabled');
+                window.isSalesforceReady = true;
 
             }).catch(error => {
-                console.error("ERRORE durante l'inizializzazione:", error);
+                console.error("ERRORE FATALE INIT:", error);
+                document.getElementById('btn-open-chat').innerText = "Errore Chat";
             });
 
         } catch (err) {
-            console.error('Error loading Embedded Messaging: ', err);
+            console.error('Eccezione nello script di init: ', err);
         }
     };
   </script>
+  
+  <script type='text/javascript' src='https://chogangroup--devai1.sandbox.my.site.com/ESWCaseSupportAgentTes1764164304917/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
 </body>
 </html>
