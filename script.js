@@ -8,7 +8,7 @@ function login() {
     return;
   }
 
-  // Salva in localStorage per riutilizzo (es. chat)
+  // Salva in localStorage per riutilizzo
   localStorage.setItem('name', name);
   localStorage.setItem('email', email);
 

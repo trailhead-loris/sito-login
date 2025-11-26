@@ -18,23 +18,31 @@
     <h1 id="welcome-message">Benvenuto!</h1>
     <p class="email" id="email-line"></p>
 
-    <!-- Esempio: passa l'email come parametro alla chat -->
-    <a id="chat-link" class="button" href="#">Apri chat= localStorage.getItem('name');
+    <a id="chat-link" class="button" href="#">Caricamento...</a>
+  </div>
+
+  <script>
+    // Recupera i dati salvati
+    const name = localStorage.getItem('name');
     const email = localStorage.getItem('email');
 
-    // Fallback se l’utente arriva senza login
+    // 1. Gestione del Nome
+    // Se 'name' esiste usa quello, altrimenti usa 'Utente'
     const displayName = name || 'Utente';
     document.getElementById('welcome-message').innerText = `Benvenuto, ${displayName}!`;
 
+    // 2. Gestione della Email
     if (email) {
       document.getElementById('email-line').innerText = `Email: ${email}`;
     } else {
       document.getElementById('email-line').innerText = `Email non disponibile`;
     }
 
-    // Prepara link verso una chat passando l’email come querystring
-    // Sostituisci 'chat.html' con la tua pagina chat reale
+    // 3. Gestione del Link Chat
+    // Creiamo l'URL dinamico
     const chatUrl = `chat.html?email=${encodeURIComponent(email || '')}`;
+    
+    // Aggiorniamo il bottone nell'HTML
     const chatLink = document.getElementById('chat-link');
     chatLink.href = chatUrl;
     chatLink.innerText = 'Vai alla chat';
