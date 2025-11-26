@@ -50,28 +50,42 @@
     };
   </script>
 
-  <script type='text/javascript'>
+<script type='text/javascript'>
     function initEmbeddedMessaging() {
         try {
             // Recupera email
             const userEmail = localStorage.getItem('email') || '';
             
+            // LOG DI CONTROLLO 1
+            console.log("1. Email trovata nel localStorage:", userEmail);
+
             embeddedservice_bootstrap.settings.language = 'it'; 
 
             embeddedservice_bootstrap.init(
                 '00DfZ000000Aod3',
-                'Case_Support_Agent_With_variable',
+                'Case_Support_Agent_With_variable', 
                 'https://chogangroup--devai1.sandbox.my.site.com/ESWCaseSupportAgentTes1764164304917',
                 {
                     scrt2URL: 'https://chogangroup--devai1.sandbox.my.salesforce-scrt.com'
                 }
             ).then(() => {
-                // APPENA IL WIDGET È PRONTO:
-                // 1. Passiamo l'email nascosta
-                embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
+                // LOG DI CONTROLLO 2
+                console.log("2. Init completata. Tento di inviare i campi nascosti...");
+                
+                // Preparo l'oggetto
+                const hiddenFields = {
                     "Login_Email_Consulente": userEmail
-                });
-                console.log("Salesforce pronto. Email passata:", userEmail);
+                };
+
+                // Invio
+                embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields(hiddenFields);
+                
+                // LOG DI CONTROLLO 3
+                console.log("3. EMAIL INVIATA A SALESFORCE:", hiddenFields);
+                console.log("Se non la vedi nel Flow, controlla che la variabile Flow sia 'Available for Input'.");
+
+            }).catch(error => {
+                console.error("ERRORE durante l'inizializzazione:", error);
             });
 
         } catch (err) {
@@ -79,8 +93,6 @@
         }
     };
   </script>
-  
-  <script type='text/javascript' src='https://chogangroup--devai1.sandbox.my.site.com/ESWCaseSupportAgentTes1764164304917/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
 </body>
 </html>
