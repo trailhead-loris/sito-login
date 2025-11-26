@@ -47,5 +47,25 @@
     chatLink.href = chatUrl;
     chatLink.innerText = 'Vai alla chat';
   </script>
+  <script type='text/javascript'>
+	function initEmbeddedMessaging() {
+		try {
+			embeddedservice_bootstrap.settings.language = 'it'; // For example, enter 'en' or 'en-US'
+
+			embeddedservice_bootstrap.init(
+				'00DfZ000000Aod3',
+				'Case_Support_Agent_Test',
+				'https://chogangroup--devai1.sandbox.my.site.com/ESWCaseSupportAgentTes1764164304917',
+				{
+					scrt2URL: 'https://chogangroup--devai1.sandbox.my.salesforce-scrt.com'
+				}
+			);
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
+</script>
+<script type='text/javascript' src='https://chogangroup--devai1.sandbox.my.site.com/ESWCaseSupportAgentTes1764164304917/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+
 </body>
 </html>
