@@ -78,7 +78,7 @@
                 btn.classList.remove('disabled');
             });
 
-            // INIZIALIZZAZIONE (Senza .then)
+            // senza then ma con evento specifico
             embeddedservice_bootstrap.init(
                 '00DfZ000000Aod3',
                 'Case_Support_Agent_With_variable', 
@@ -91,7 +91,7 @@
             // Ora aspettiamo l'evento "onEmbeddedMessagingReady" definito sopra.
 
         } catch (err) {
-            console.error('Eccezione nello script di init: ', err);
+            console.error('Eccezione ne llo script di init: ', err);
         }
     };
   </script>
