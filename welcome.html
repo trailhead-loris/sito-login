@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Benvenuto</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f4f6f8; margin: 0; }
+    .box { background: #fff; padding: 24px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+    h1 { margin: 0 0 10px; }
+    .email { color: #444; margin-bottom: 16px; }
+    a.button { display: inline-block; padding: 10px 14px; background: #0969da; color: #fff; border-radius: 6px; text-decoration: none; }
+    a.button:hover { background: #0758b7; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1 id="welcome-message">Benvenuto!</h1>
+    <p class="email" id="email-line"></p>
+
+    <!-- Esempio: passa l'email come parametro alla chat -->
+    <a id="chat-link" class="button" href="#">Apri chat= localStorage.getItem('name');
+    const email = localStorage.getItem('email');
+
+    // Fallback se l’utente arriva senza login
+    const displayName = name || 'Utente';
+    document.getElementById('welcome-message').innerText = `Benvenuto, ${displayName}!`;
+
+    if (email) {
+      document.getElementById('email-line').innerText = `Email: ${email}`;
+    } else {
+      document.getElementById('email-line').innerText = `Email non disponibile`;
+    }
+
+    // Prepara link verso una chat passando l’email come querystring
+    // Sostituisci 'chat.html' con la tua pagina chat reale
+    const chatUrl = `chat.html?email=${encodeURIComponent(email || '')}`;
+    const chatLink = document.getElementById('chat-link');
+    chatLink.href = chatUrl;
+    chatLink.innerText = 'Vai alla chat';
+  </script>
+</body>
+</html>
