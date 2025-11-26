@@ -26,18 +26,15 @@
     const name = localStorage.getItem('name');
     const email = localStorage.getItem('email');
 
-    // UI: Nome
     const displayName = name || 'Utente';
     document.getElementById('welcome-message').innerText = `Benvenuto, ${displayName}!`;
 
-    // UI: Email
     if (email) {
       document.getElementById('email-line').innerText = `Email: ${email}`;
     } else {
       document.getElementById('email-line').innerText = `Email non disponibile`;
     }
 
-    // UI: Gestione Click Bottone
     const btnChat = document.getElementById('btn-open-chat');
     
     btnChat.onclick = function() {
@@ -45,19 +42,13 @@
             console.warn("Chat non ancora pronta.");
             return;
         }
-
         console.log("Tentativo di apertura chat...");
-        // Avvia la chat
         embeddedservice_bootstrap.utilAPI.launchChat()
-            .then(() => console.log("Chat aperta."))
             .catch((e) => console.error("Errore apertura chat:", e));
     };
   </script>
 
   <script type='text/javascript'>
-    // Variabile globale per capire quando è pronto
-    window.isSalesforceReady = false;
-
     function initEmbeddedMessaging() {
         console.log("--> INIZIO INIT SALESFORCE <--");
         try {
@@ -66,7 +57,28 @@
 
             embeddedservice_bootstrap.settings.language = 'it'; 
 
-            // Configurazione (con il nome corretto che mi hai dato prima)
+            // ASCOLTATORE DI EVENTI:
+            // Invece di usare .then(), diciamo al browser di aspettare questo segnale
+            window.addEventListener("onEmbeddedMessagingReady", () => {
+                console.log("2. EVENTO RICEVUTO: Messaging Ready!");
+                
+                // Ora siamo sicuri che l'API esiste
+                try {
+                    embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
+                        "Login_Email_Consulente": userEmail
+                    });
+                    console.log("3. Parametri nascosti impostati.");
+                } catch (e) {
+                    console.error("Errore nel settare i campi nascosti:", e);
+                }
+
+                // Abilitiamo il bottone
+                const btn = document.getElementById('btn-open-chat');
+                btn.innerText = "Parla con l'Agente";
+                btn.classList.remove('disabled');
+            });
+
+            // INIZIALIZZAZIONE (Senza .then)
             embeddedservice_bootstrap.init(
                 '00DfZ000000Aod3',
                 'Case_Support_Agent_With_variable', 
@@ -74,29 +86,12 @@
                 {
                     scrt2URL: 'https://chogangroup--devai1.sandbox.my.salesforce-scrt.com'
                 }
-            ).then(() => {
-                // SUCCESSO!
-                console.log("2. Init completata con successo.");
-
-                // Passaggio parametri nascosti
-                embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
-                    "Login_Email_Consulente": userEmail
-                });
-                console.log("3. Parametri nascosti impostati.");
-
-                // Abilitiamo il bottone
-                const btn = document.getElementById('btn-open-chat');
-                btn.innerText = "Premi per parlare con l'Agente";
-                btn.classList.remove('disabled');
-                window.isSalesforceReady = true;
-
-            }).catch(error => {
-                console.error("ERRORE FATALE INIT:", error);
-                document.getElementById('btn-open-chat').innerText = "Errore Chat";
-            });
+            );
+            // Se arriviamo qui senza errori, l'init è partita.
+            // Ora aspettiamo l'evento "onEmbeddedMessagingReady" definito sopra.
 
         } catch (err) {
-            console.error('Eccezione nello script init: ', err);
+            console.error('Eccezione nello script di init: ', err);
         }
     };
   </script>
