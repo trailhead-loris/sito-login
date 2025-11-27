@@ -12,7 +12,6 @@
     a.button { display: inline-block; padding: 10px 14px; background: #0969da; color: #fff; border-radius: 6px; text-decoration: none; cursor: pointer; }
     a.button:hover { background: #0758b7; }
     a.button.disabled { background: #ccc; cursor: not-allowed; }
-    
   </style>
 </head>
 <body>
@@ -21,6 +20,7 @@
     <p class="email" id="email-line"></p>
 
     <a id="btn-open-chat" class="button disabled">Caricamento Chat...</a>
+    
     <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
         <button onclick="logout()" style="background: none; border: none; color: #dc3545; cursor: pointer; text-decoration: underline; font-size: 14px;">
             Esci e cambia utente
@@ -61,21 +61,17 @@
         try {
             const userEmail = localStorage.getItem('email') || '';
             console.log("1. Email recuperata:", userEmail);
-            //sezione setting 
-            //setting lingua
-            embeddedservice_bootstrap.settings.language = 'it'; //va passata per ogni sito con lingua diversa da Italiano
-            // imposta false per bloccare la scrittura da parte dell'utente mentre che l'agente sta rispondendo
+
+            // --- SEZIONE SETTINGS ---
+            embeddedservice_bootstrap.settings.language = 'it'; 
+            
+            // BLOCCO SCRITTURA UTENTE (Correttamente posizionato qui!)
             embeddedservice_bootstrap.settings.enableUserInputForConversationWithBot = false;
-            
 
-
-
-            
-            // Evento
+            // --- EVENT LISTENER ---
             window.addEventListener("onEmbeddedMessagingReady", () => {
                 console.log("2. EVENTO RICEVUTO: Messaging Ready!");
                 
-                //funzione salesforce - Usare la stessa variabile - CaseSensitive - Json con tutti i parametri
                 try {
                     embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
                         "Login_Email_Consulente": userEmail
@@ -91,7 +87,7 @@
                 btn.classList.remove('disabled');
             });
 
-            // Chat agent case support - Inserimento del nome dell'embeeded service
+            // --- INIT ---
             embeddedservice_bootstrap.init(
                 '00DfZ000000Aod3',
                 'Case_Support_Agent_With_variable', 
@@ -100,16 +96,16 @@
                     scrt2URL: 'https://chogangroup--devai1.sandbox.my.salesforce-scrt.com'
                 }
             );
-            // Se arriviamo qui senza errori, l'init è partita.
-            // Ora aspettiamo l'evento "onEmbeddedMessagingReady" definito sopra.
 
         } catch (err) {
-            console.error('Eccezione ne llo script di init: ', err);
+            console.error('Eccezione nello script di init: ', err);
         }
     };
   </script>
   
   <script type='text/javascript' src='https://chogangroup--devai1.sandbox.my.site.com/ESWCaseSupportAgentTes1764164304917/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+
+  <script src="script.js"></script>
 
 </body>
 </html>
