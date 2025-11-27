@@ -58,8 +58,10 @@
             //sezione setting 
             //setting lingua
             embeddedservice_bootstrap.settings.language = 'it'; //va passata per ogni sito con lingua diversa da Italiano
-            // imposta falsee per bloccare la scrittura da parte dell'utente mentre che l'agente sta rispondendo
+            // imposta false per bloccare la scrittura da parte dell'utente mentre che l'agente sta rispondendo
             embeddedservice_bootstrap.settings.enableUserInputForConversationWithBot = false;
+            // imposta true per bloccare l'invio dei file
+            embeddedservice_bootstrap.settings.disableFileTransfer = true;
 
 
 
