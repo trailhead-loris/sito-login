@@ -12,6 +12,7 @@
     a.button { display: inline-block; padding: 10px 14px; background: #0969da; color: #fff; border-radius: 6px; text-decoration: none; cursor: pointer; }
     a.button:hover { background: #0758b7; }
     a.button.disabled { background: #ccc; cursor: not-allowed; }
+    
   </style>
 </head>
 <body>
@@ -54,8 +55,13 @@
         try {
             const userEmail = localStorage.getItem('email') || '';
             console.log("1. Email recuperata:", userEmail);
+            //sezione setting 
+            //setting lingua
+            embeddedservice_bootstrap.settings.language = 'it'; //va passata per ogni sito con lingua diversa da Italiano
+            // imposta falsee per bloccare la scrittura da parte dell'utente mentre che l'agente sta rispondendo
+            embeddedservice_bootstrap.settings.enableUserInputForConversationWithBot = false;
 
-            embeddedservice_bootstrap.settings.language = 'it'; 
+
 
             
             // Evento
