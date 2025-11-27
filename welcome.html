@@ -57,19 +57,19 @@
 
             embeddedservice_bootstrap.settings.language = 'it'; 
 
-            // ASCOLTATORE DI EVENTI:
-            // Invece di usare .then(), diciamo al browser di aspettare questo segnale
+            
+            // Evento
             window.addEventListener("onEmbeddedMessagingReady", () => {
                 console.log("2. EVENTO RICEVUTO: Messaging Ready!");
                 
-                // Ora siamo sicuri che l'API esiste
+                //funzione salesforce - Usare la stessa variabile - CaseSensitive - Json con tutti i parametri
                 try {
                     embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
                         "Login_Email_Consulente": userEmail
                     });
-                    console.log("3. Parametri nascosti impostati.");
+                    console.log("3. Parametri hidden impostati.");
                 } catch (e) {
-                    console.error("Errore nel settare i campi nascosti:", e);
+                    console.error("Errore nel settare i campi hidden:", e);
                 }
 
                 // Abilitiamo il bottone
@@ -78,7 +78,7 @@
                 btn.classList.remove('disabled');
             });
 
-            // senza then ma con evento specifico
+            // Chat agent case support - Inserimento del nome dell'embeeded service
             embeddedservice_bootstrap.init(
                 '00DfZ000000Aod3',
                 'Case_Support_Agent_With_variable', 
